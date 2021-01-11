@@ -124,13 +124,13 @@
     <_MSBuildFiles Include="$(MSBuildSrcDir)\class-parse.pdb" ExcludeFromAndroidNETSdk="true" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\generator.exe"   ExcludeFromAndroidNETSdk="true" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\generator.pdb"   ExcludeFromAndroidNETSdk="true" />
-    <_MSBuildFiles Include="$(MSBuildSrcDir)\HtmlAgilityPack.dll" />
+    <_MSBuildFiles Include="$(MSBuildSrcDir)\HtmlAgilityPack.dll"         ThirdPartyAssembly="true" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\HtmlAgilityPack.pdb" />
-    <_MSBuildFiles Include="$(MSBuildSrcDir)\ICSharpCode.SharpZipLib.dll" />
+    <_MSBuildFiles Include="$(MSBuildSrcDir)\ICSharpCode.SharpZipLib.dll" ThirdPartyAssembly="true" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\ICSharpCode.SharpZipLib.pdb" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\illinkanalyzer.exe"  ExcludeFromAndroidNETSdk="true" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\illinkanalyzer.pdb"  ExcludeFromAndroidNETSdk="true" />
-    <_MSBuildFiles Include="$(MSBuildSrcDir)\Irony.dll" />
+    <_MSBuildFiles Include="$(MSBuildSrcDir)\Irony.dll"           ThirdPartyAssembly="true" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\java-interop.jar" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\java-source-utils.jar" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\javadoc-to-mdoc.exe" ExcludeFromAndroidNETSdk="true" />
@@ -161,6 +161,7 @@
     <_MSBuildFiles Include="$(MSBuildSrcDir)\jit-times.pdb"             ExcludeFromAndroidNETSdk="true" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\jnimarshalmethod-gen.exe"  ExcludeFromAndroidNETSdk="true" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\jnimarshalmethod-gen.pdb"  ExcludeFromAndroidNETSdk="true" />
+    <_MSBuildFiles Include="$(MSBuildSrcDir)\K4os.Compression.LZ4.dll"  ThirdPartyAssembly="true"/>
     <_MSBuildFiles Include="$(MSBuildSrcDir)\LayoutBinding.cs" />
     <_MSBuildFiles Include="@(AndroidSupportedTargetJitAbi->'$(MSBuildSrcDir)\lib\%(Identity)\libmono-android.debug.so')"                     ExcludeFromAndroidNETSdk="true" />
     <_MSBuildFiles Include="@(AndroidSupportedTargetJitAbi->'$(MSBuildSrcDir)\lib\%(Identity)\libmono-android-checked+asan.debug.so')"        ExcludeFromAndroidNETSdk="true" />
@@ -229,8 +230,8 @@
     <_MSBuildFiles Include="$(MSBuildSrcDir)\java_runtime.dex" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\java_runtime_fastdev.dex" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\manifestmerger.jar" />
-    <_MSBuildFiles Include="$(MSBuildSrcDir)\protobuf-net.dll" />
-    <_MSBuildFiles Include="$(MSBuildSrcDir)\SgmlReaderDll.dll" />
+    <_MSBuildFiles Include="$(MSBuildSrcDir)\protobuf-net.dll"  ThirdPartyAssembly="true" />
+    <_MSBuildFiles Include="$(MSBuildSrcDir)\SgmlReaderDll.dll" ThirdPartyAssembly="true" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\System.Buffers.dll" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Xamarin.Android.Aapt.targets" ExcludeFromAndroidNETSdk="true" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Xamarin.Android.Aapt2.targets" />
@@ -283,7 +284,6 @@
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Xamarin.Build.AsyncTask.pdb" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Xamarin.SourceWriter.dll" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Xamarin.SourceWriter.pdb" />
-    <_MSBuildFiles Include="$(MSBuildSrcDir)\K4os.Compression.LZ4.dll" />
   </ItemGroup>
   <ItemGroup>
     <_MSBuildTargetsSrcFiles Include="$(MSBuildTargetsSrcDir)\Xamarin.Android.AvailableItems.targets" />
@@ -311,7 +311,7 @@
     <_MSBuildFilesWin Include="$(MSBuildSrcDir)\ndk\x86_64-linux-android-as.exe" />
     <_MSBuildFilesWin Include="$(MSBuildSrcDir)\ndk\x86_64-linux-android-ld.exe" />
     <_MSBuildFilesWin Include="$(MSBuildSrcDir)\ndk\x86_64-linux-android-strip.exe" />
-    <_MSBuildFilesWin Include="$(MSBuildSrcDir)\ndk\libwinpthread-1.dll" />
+    <_MSBuildFilesWin Include="$(MSBuildSrcDir)\ndk\libwinpthread-1.dll" ThirdPartyAssembly="true" />
     <_MSBuildLibHostFilesWin Include="$(MSBuildSrcDir)\lib\host-mxe-Win64\libmono-android.debug.dll"   Condition=" '$(HostOS)' != 'Windows' " />
     <_MSBuildLibHostFilesWin Include="$(MSBuildSrcDir)\lib\host-mxe-Win64\libmono-android.release.dll" Condition=" '$(HostOS)' != 'Windows' " />
     <_MSBuildLibHostFilesWin Include="$(MSBuildSrcDir)\lib\host-mxe-Win64\libMonoPosixHelper.dll" />
@@ -400,7 +400,7 @@
   </ItemGroup>
   <!-- monodroid -->
   <ItemGroup Condition=" '$(_HasCommercialFiles)' == 'True' ">
-    <_MSBuildFiles Include="$(MSBuildSrcDir)\INIFileParser.dll" />
+    <_MSBuildFiles Include="$(MSBuildSrcDir)\INIFileParser.dll" ThirdPartyAssembly="true" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\jar2xml.jar" ExcludeFromAndroidNETSdk="true" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Mono.AndroidTools.dll" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Mono.AndroidTools.pdb" />
@@ -412,11 +412,11 @@
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Xamarin.Android.Build.Debugging.Tasks.pdb" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Xamarin.Android.Common.Debugging.props" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Xamarin.Android.Common.Debugging.targets" />
+    <!-- The `installer` tool relies on protobuf-net.dll, listed above. -->
     <_MSBuildFiles Include="$(MSBuildSrcDir)\lib\arm64-v8a\installer" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\lib\armeabi-v7a\installer" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\lib\x86\installer" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\lib\x86_64\installer" />
-    <_MSBuildFiles Include="$(MSBuildSrcDir)\protobuf-net.dll" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\System.CodeDom.dll" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\System.Collections.Immutable.dll" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Xamarin.AndroidTools.dll" />
@@ -428,7 +428,6 @@
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Xamarin.Installer.Common.dll" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Xamarin.Installer.Common.pdb" />
     <_MSBuildFiles Include="$(MSBuildSrcDir)\Xamarin.Installer.Common.targets" />
-    <_MSBuildFiles Include="$(MSBuildSrcDir)\K4os.Compression.LZ4.dll" />
     <_MSBuildFiles Include="@(AndroidSupportedTargetJitAbi->'$(MSBuildSrcDir)\lib\%(Identity)\xamarin.sync')" />
     <_MSBuildFiles Include="@(AndroidSupportedTargetJitAbi->'$(MSBuildSrcDir)\lib\%(Identity)\xamarin.find')" />
     <_MSBuildFiles Include="@(AndroidSupportedTargetJitAbi->'$(MSBuildSrcDir)\lib\%(Identity)\xamarin.stat')" />

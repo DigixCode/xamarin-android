@@ -46,6 +46,7 @@ resources:
 
 # Global variables
 variables:
+  TeamName: XamarinAndroid
   XA.Jdk8.Folder: jdk-1.8
   XA.Jdk11.Folder: jdk-11
   NuGetArtifactName: nupkgs
@@ -1102,7 +1103,7 @@ stages:
   # Check - "Xamarin.Android (.NET 6 Preview Installers Create .msi and Upload)"
   - job: dotnet_preview_installers
     displayName: Create .msi and Upload
-    pool: $(HostedWinVS2019)
+    pool: VSEng-MicroBuildVS2019
     workspace:
       clean: all
     steps:
@@ -1120,6 +1121,23 @@ stages:
         downloadPath: $(System.DefaultWorkingDirectory)\installer-artifacts
         patterns: Microsoft.*.pkg
 
+    - powershell: |
+        if ("$(Build.DefinitionName)" -eq "Xamarin.Android" -and "$(Build.Reason)" -ne "PullRequest") {
+            $signType = "Real"
+        } else {
+            $signType = "Test"
+        }
+        Write-Host "##vso[task.setvariable variable=MICROBUILD_SIGN_TYPE]$signType"
+      displayName: Set MICROBUILD_SIGN_TYPE
+
+    - task: MicroBuildSigningPlugin@3
+      displayName: Install Signing Plugin
+      inputs:
+        signType: $(MICROBUILD_SIGN_TYPE)
+        azureSubscription: MicroBuild Signing Task (DevDiv)
+      env:
+        SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
     - task: MSBuild@1
       displayName: msbuild Xamarin.Android.BootstrapTasks
       inputs:
@@ -1128,11 +1146,18 @@ stages:
         msbuildArguments: /restore /bl:$(System.DefaultWorkingDirectory)\bin\Build$(XA.Build.Configuration)\msbuild-bootstraptasks.binlog
 
     - task: MSBuild@1
+      displayName: msbuild /t:RestoreInstallerProjects
+      inputs:
+        solution: Xamarin.Android.sln
+        configuration: $(XA.Build.Configuration)
+        msbuildArguments: /t:RestoreInstallerProjects /bl:$(System.DefaultWorkingDirectory)\bin\Build$(XA.Build.Configuration)\restore-workload.binlog
+
+    - task: MSBuild@1
       displayName: msbuild /t:CreateWorkloadInstallers
       inputs:
         solution: Xamarin.Android.sln
         configuration: $(XA.Build.Configuration)
-        msbuildArguments: /t:CreateWorkloadInstallers /bl:$(System.DefaultWorkingDirectory)\bin\Build$(XA.Build.Configuration)\msbuild-workload.binlog
+        msbuildArguments: /t:CreateWorkloadInstallers /p:SignType=$(MICROBUILD_SIGN_TYPE) /p:MicroBuildPluginDirectory=$(MicroBuildOverridePluginDirectory) /bl:$(System.DefaultWorkingDirectory)\bin\Build$(XA.Build.Configuration)\msbuild-workload.binlog
 
     - script: copy /Y $(System.DefaultWorkingDirectory)\bin\Build$(XA.Build.Configuration)\*.msi $(System.DefaultWorkingDirectory)\installer-artifacts
       displayName: copy .msi
@@ -1143,6 +1168,10 @@ stages:
         Azure.ContainerName: $(Azure.Container.Name)
         Azure.BlobPrefix: $(Build.DefinitionName)/public/net6/$(Build.BuildId)/$(Build.SourceBranchName)/$(Build.SourceVersion)
         GitHub.Context: .NET 6 Preview Installers
+
+    - task: MicroBuildCleanup@1
+      displayName: Clean Up Signing Tools
+      condition: always()
 
     - template: yaml-templates/upload-results.yaml
       parameters:
@@ -1164,8 +1193,6 @@ stages:
       clean: all
     variables:
     - group: Xamarin Notarization
-    - name: TeamName
-      value: XamarinAndroid
     steps:
     - checkout: self
 
@@ -1284,6 +1311,10 @@ stages:
     - template: uninstall-certificates/v1.yml@yaml
       parameters:
         HostedMacKeychainPassword: $(AzDO-OnPrem-KeychainPass)
+
+    - task: MicroBuildCleanup@1
+      displayName: Clean Up Signing Tools
+      condition: always()
 
   # Check - "Xamarin.Android (Finalize Installers Queue Vsix Signing)"
   - job: queue_vsix_signing

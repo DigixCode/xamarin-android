@@ -1,0 +1,59 @@
+<!--
+***********************************************************************************************
+sign-files.proj
+
+This project uses the MicroBuild library to sign files included in our .NET 6 installers.
+First and third party .jar files use the same Authenticode, and can only be signed when
+"real" signing is enabled (via /p:SignType=Real).
+***********************************************************************************************
+-->
+<Project Sdk="Microsoft.Build.NoTargets">
+
+  <Import Project="..\..\Configuration.props" />
+  <Import Project="create-installers.targets" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- NOTE: Any file you want to sign must be under either $(OutDir) or $(IntermediateOutputPath). -->
+    <OutDir Condition=" '$(OutDir)' == '' ">$(DotNetPreviewPath)packs</OutDir>
+  </PropertyGroup>
+
+  <!-- The "SignFiles" target is imported by the MicroBuild NuGet and makes use of the @(FilesToSign) item group -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="0.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <Target Name="_DetermineFilesToSign"
+      BeforeTargets="SignFiles" >
+    <ItemGroup>
+      <_ThirdPartySdkAssemblyNames Include="@(_MSBuildFiles -> '%(Filename)%(Extension)')"    Condition=" '%(Extension)' == '.dll' and '%(_MSBuildFiles.ThirdPartyAssembly)' == 'true' " />
+      <_ThirdPartySdkAssemblyNames Include="@(_MSBuildFilesWin -> '%(Filename)%(Extension)')" Condition=" '%(Extension)' == '.dll' and '%(_MSBuildFilesWin.ThirdPartyAssembly)' == 'true' " />
+    </ItemGroup>
+    <ItemGroup>
+      <!-- Third party Microsoft.Android.*.Sdk content -->
+      <FilesToSign Include="$(OutDir)\Microsoft.Android.Sdk*\**\%(_ThirdPartySdkAssemblyNames.Identity)">
+        <Authenticode>3PartySHA2</Authenticode>
+      </FilesToSign>
+      <!-- First party Microsoft.Android.*.Sdk content -->
+      <FilesToSign Include="$(OutDir)\Microsoft.Android.Sdk*\**\*.dll" Exclude="@(FilesToSign)">
+        <Authenticode>Microsoft400</Authenticode>
+      </FilesToSign>
+      <FilesToSign Include="$(OutDir)\Microsoft.Android.Sdk*\**\*.jar" Condition=" '$(SignType)' == 'Real' ">
+        <Authenticode>MicrosoftJARSHA2</Authenticode>
+      </FilesToSign>
+      <!-- Microsoft.Android.Ref content -->
+      <FilesToSign Include="$(OutDir)\Microsoft.Android.Ref\**\*.dll"> 
+        <Authenticode>Microsoft400</Authenticode>
+      </FilesToSign>
+      <FilesToSign Include="$(OutDir)\Microsoft.Android.Ref\**\*.jar" Condition=" '$(SignType)' == 'Real' ">
+        <Authenticode>MicrosoftJARSHA2</Authenticode>
+      </FilesToSign>
+    </ItemGroup>
+  </Target>
+
+</Project>

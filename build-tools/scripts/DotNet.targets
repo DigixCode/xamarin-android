@@ -14,10 +14,22 @@
     </ItemGroup>
     <RemoveDir Directories="@(_DirectoriesToRemove)" />
   </Target>
+  <!-- Microsoft.VisualStudioEng.MicroBuild.Core.[props][targets] will not be imported if not restored separately before building. -->
+  <Target Name="RestoreInstallerProjects">
+    <MSBuild Targets="Restore" Projects="$(_Root)build-tools\installers\sign-files.proj" />
+    <MSBuild Targets="Restore" Projects="$(_Root)build-tools\create-dotnet-msi\create-dotnet-msi.csproj" />
+    <MSBuild Targets="Restore" Projects="$(_Root)build-tools\create-dotnet-pkg\create-dotnet-pkg.csproj" />
+  </Target>
   <Target Name="CreateWorkloadInstallers">
     <MSBuild
         Targets="ExtractWorkloadPacks"
         Projects="$(_Root)build-tools\create-packs\Microsoft.Android.Sdk.proj"
+        Properties="Configuration=$(Configuration)"
+    />
+    <MSBuild
+        Condition=" $([MSBuild]::IsOSPlatform('windows')) "
+        Targets="Restore;Build"
+        Projects="$(_Root)build-tools\installers\sign-files.proj"
         Properties="Configuration=$(Configuration)"
     />
     <MSBuild
